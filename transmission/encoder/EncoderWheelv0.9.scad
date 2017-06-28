@@ -23,23 +23,26 @@
 /////////////////////////////////////////////////////////////////////////////
 // User-defined values... 
 /////////////////////////////////////////////////////////////////////////////
-$fn = 100;                          // Surface's smoothness
-bearingSize = [8, 8, 7]; 		 	// The dimensions of the bearing, if you're using that to define the hole 
-encoderCircumference = 54;		 	// 100; The circumference at the *surface* of the wheel (subtract tire thickness, e.g.)
+$fn = 150;                          // Surface's smoothness
+bearingSize = [5.5, 5.5, 5]; 		 	// The dimensions of the bearing, if you're using that to define the hole 
+encoderCircumference = 30;		 	// 100; The circumference at the *surface* of the wheel (subtract tire thickness, e.g.)
 internalWidth = bearingSize[2];	 	// The internal width (e.g. tire width) of the wheel. This is the width of a pinch 608 by default
 collarPlay = 0.5; 				 	// The amount of play to build into the internal width. 
 collarHeight = 10; 				 	// How high the shoulders/encoder extend out from the wheel 
-collarWidth = 2; 				 	// 1.5; How thick the shoulders are 
+collarWidth = 1; 				 	// 1.5; How thick the shoulders are 
+
 holeDiameter = bearingSize[1]; 	 	// The diameter of the mounting hole. This is the diameter of a 608 bearing by default. 
+shaftDType = [5.4, 3.6];
+
 holePlay = 0.3; 					 	// The amount of play built into the mounting hole. 
-timingHoles = 18;					 	// The number of timing holes to render. (e.g. 100mm circumference / 5mm per hole = 20 holes)
+timingHoles = 30;					 	// The number of timing holes to render. (e.g. 100mm circumference / 5mm per hole = 20 holes)
 timingHoleInset = 1; 				 	// How far the timing holes are inset from the edge of the shoulder
 
 // Calculated values -- don't change them. 
 encoderDiameter = encoderCircumference / PI; 
 
 // Captive Nut traps allow you to tighten the wheel onto a shaft or bearing. 
-nutCount = 1; 
+nutCount = 0; 
 nutDiameter = 5.4; 				 	// The distance across the nut, from flat to flat, default M3
 nutThickness = 2.3; 				 	// The thickness of the nut, default M3
 setScrewDiameter = 3;			 	 	// The diameter of the set screw clearance hole, default M3
@@ -60,8 +63,7 @@ useHolesInstead = false; 				// If true, render bolt through-holes rather than p
 mateHoleDiameter = setScrewDiameter; 	// Bolt holes are sized to match hardware, not physical properties. 
 
 // These values define the cap
-capDiameter = encoderDiameter 
-	+ (collarHeight*2);			 	// The diameter of the shoulder cap, defaulting to the outer diameter of the encoder
+capDiameter = 0;//encoderDiameter + (collarHeight*2);			 	// The diameter of the shoulder cap, defaulting to the outer diameter of the encoder
 capWidth = collarWidth; 			 	// The thickness of the shoulder cap, defaulting to the thickness of the slotted encoder shoulder
 capStandoff = 0;				 	 	// A surface rendered on the inside of the cap around the mounting hole
 capStandoffWidth = 1;				 	// The width of the stand-off surface
@@ -100,8 +102,10 @@ translate([0,-(encoderDiameter/2)-collarHeight-(distanceApart/2),0]) {
 }
 
 // Render the cap
-translate([0,(capDiameter/2)+(distanceApart/2),0]) {
-	renderCap();
+if(capDiameter > 0){
+    translate([0,(capDiameter/2)+(distanceApart/2),0]) {
+        renderCap();
+    }
 }
 
 
@@ -132,6 +136,8 @@ module renderEncoder() {
 	encoder(  encoderCircumference, 
 		internalWidth + collarPlay,
 		holeDiameter + holePlay,
+        shaftDType[0] + holePlay,
+        shaftDType[1] + holePlay,
 		collarHeight,
 		collarWidth,
 		timingHoles,
@@ -157,7 +163,7 @@ module renderEncoder() {
 // any of the variables above. 
 /////////////////////////////////////////////////////////////////////////////
 
-module encoder( circumference, internalWidth, holeDiameter=8, collarHeight=5, collarWidth=1.5, 
+module encoder( circumference, internalWidth, holeDiameter=8, shaftDTypeD = 0, shaftDTypeW = 0, collarHeight=5, collarWidth=1.5, 
 	timingHoles=8, timingHoleInset=1, constraintInset=0, constraintThickness=0, 
 	pinCount=0, pinLength=0, pinDiameter=0, useHolesInstead=false, mateHoleDiameter=0, pinHoleRotation=0,
 	nutCount=3, nutDiameter=5.4, nutThickness=2.3, setScrewDiameter=3 ) {
@@ -173,14 +179,19 @@ module encoder( circumference, internalWidth, holeDiameter=8, collarHeight=5, co
 			// The body of the wheel/shoulder
 			union() {
 				cylinder( r=encoderDiameter/2 + collarHeight, h=collarWidth );
-				translate([0,0,collarWidth])
-					cylinder( r=encoderDiameter/2, h=internalWidth);
+                translate([0,0,collarWidth])
+                    cylinder( r=encoderDiameter/2, h=internalWidth);
 			}
 
 			// Punch out the mounting hole
-			translate([0,0,-0.5])
-				cylinder( r=holeDiameter/2, h=internalWidth + collarWidth + 1);
-
+            if(shaftDTypeD > 0 && shaftDTypeW > 0){
+                rotate([0,0,90])translate([-shaftDTypeD/2,-shaftDTypeW/2,-0.5])
+                    cube([shaftDTypeD,shaftDTypeW,internalWidth + collarWidth + 1]);
+            }else{
+                translate([0,0,-0.5])
+                    cylinder( r=holeDiameter/2, h=internalWidth + collarWidth + 1);
+            }
+            
 			// Punch out timing holes	
 			translate([0,0,-0.5]) {
 				for ( i = [0 : timingHoles-1] ) {

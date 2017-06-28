@@ -206,7 +206,7 @@ concavity         = [0,0];      // Concavity distance of spoke area for [inside,
 
 includeHub           = true; // Set to false to remove the hub and only include the shaft diameter hole. 
 hubDiameter          = 20;    // The diameter of the hub portion of the wheel
-hubHeight            = 14;    // The total height of the hub
+hubHeight            = 4;    // The total height of the hub
 hubZOffset           = -2;     // The Z position of the hub, negative numbers from the surface of the wheel 
 innerCircleDiameter  = 30;    // The diameter of the solid inner circle under the hub, or zero for none. 
 
@@ -243,7 +243,7 @@ chamferOnly          = false; // Set to true to use chamfers (straight 45-degree
 shaftDiameter        = 8.2;          // The diameter of the motor shaft
 shaftFlatDiameter    = 8.2;          // The diameter of the motor shaft at the flat, or shaftDiameter for no flat.
 
-setScrewCount        = 1;          // The number of set screws/nuts to render, spaced evenly around the shaft 
+setScrewCount        = 0;          // The number of set screws/nuts to render, spaced evenly around the shaft 
 setScrewDiameter     = 3.4;          // The diameter of the set screw. 3 is the default for an M3 screw. 
 setScrewTrap         = [6, 2.8]; // Size [indiameter, thickness] of set screw nut. The depth is set automatically.
 setScrewNutDiameter  = 6.1;        // The "diameter" of the captive nut, from flat to flat (the "in-diameter")
@@ -261,7 +261,7 @@ outerNutTrap         = [12.5,0];   // Size [indiameter, depth] of a captive nut,
 
 // Quality Parameters: 
 
-$fn = 50;  // Default quality for most circle parts. 
+//$fn = 100;  // Default quality for most circle parts. 
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1033,7 +1033,7 @@ module tire( diameter, csDiameter ) {
 	render() {
 		rotate_extrude(convexity = 10)
 			translate([diameter/2, 0, 0])
-				circle(r = csDiameter/2, $fn=20);
+				circle(r = csDiameter/2);
 	}
 }
 
@@ -1061,7 +1061,7 @@ module captiveNut( nutSize, setScrewHoleDiameter=3,
 				cube( [depth, nutSize[0], nutSize[1]], center=true );
 	
 		translate([0,0,-(nutSize[1]/2)-holeLengthBottom]) 
-			cylinder(r=setScrewHoleDiameter/2, h=nutSize[1]+holeLengthTop+holeLengthBottom, $fn=15);
+			cylinder(r=setScrewHoleDiameter/2, h=nutSize[1]+holeLengthTop+holeLengthBottom);
 	}
 }
 
@@ -1083,7 +1083,7 @@ module arc( height, depth, radius, degrees ) {
 	render() {
 		difference() {
 			// Outer ring
-			rotate_extrude($fn = 100)
+			rotate_extrude()
 				translate([radius - height, 0, 0])
 					square([height,depth]);
 		
