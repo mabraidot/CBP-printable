@@ -6,7 +6,6 @@ clearance = 0.2;
 
 
 
-//motor();
 //frame();
 mop();
 
@@ -28,6 +27,13 @@ module mop(){
             translate([-36,-40,0])rotate([0,0,90])cube([80,2,5]);
             
             // ballbearing support
+            difference(){
+                translate([0,0,-1.5])cylinder(6,13,12);
+                translate([0,0,-1.5])cylinder(7, 12, 11+clearance);
+                rotate([0,0,0])translate([-1.5,-15,-1.5])cube([3,30,8]);
+                rotate([0,0,120])translate([-1.5,-15,-1.5])cube([3,30,8]);
+                rotate([0,0,240])translate([-1.5,-15,-1.5])cube([3,30,8]);
+            }
             
             // mop mounting
             translate([60,25,0])cube([10,15,5]);
@@ -41,8 +47,6 @@ module mop(){
         }
         //holes
         union(){
-            // holes
-            translate([0,0,-1.5])cylinder(r=11+clearance, h=20);
             // spokes
             translate([15,-35,-3])cube([20,70,4]);
             translate([40,-35,-3])cube([20,70,4]);
@@ -50,10 +54,10 @@ module mop(){
             translate([-35,-35,-3])cube([20,70,4]);
             translate([-60,-35,-3])cube([20,70,4]);
             // mop flexible mounting
-            translate([65,30,-2.8])bolt();
-            translate([65,-30,-2.8])bolt();
-            translate([-65,30,-2.8])bolt();
-            translate([-65,-30,-2.8])bolt();
+            translate([65,30,-5])nut();
+            translate([65,-30,-5])nut();
+            translate([-65,30,-5])rotate([0,0,180])nut();
+            translate([-65,-30,-5])rotate([0,0,180])nut();
         }
     }
 }
@@ -130,7 +134,7 @@ module bolt(){
 
 module nut(){
     union(){
-        cylinder(25, 1.5+clearance, 1.5+clearance);
+        translate([0,0,5])cylinder(25, 1.5+clearance, 1.5+clearance);
         translate([-0.5,0,5])cylinder(3, 3.5, 3.5, $fn=6);
         translate([-2.2,-3.05,5])cube([10,6.1,3]);
     }
