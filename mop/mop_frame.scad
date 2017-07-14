@@ -7,14 +7,37 @@ clearance = 0.2;
 
 
 //frame();
-mop();
-
+//mop();
+feet();
 
 
 
 /******************************/
 /**** UTILS *******************/
 /******************************/
+
+module feet(){
+    h=20;       // Gap height
+    eh=30;    // Elastic feet height
+    
+    union(){
+        translate([0,5,0])difference(){
+            cube([5,13,10]);
+            translate([-5,8,5])rotate([0,90,0])bolt();
+        }
+        translate([h-5,5,0])difference(){
+            cube([5,13,10]);
+            translate([-5,8,5])rotate([0,90,0])bolt();
+        }
+        difference(){
+            cube([eh,8,3]);
+            union(){
+                translate([5,3,-1])cube([h-10,6,5]);
+                translate([5,3,-1])cube([eh-8,1,5]);
+            }
+        }
+    }
+}
 
 // Frame
 module mop(){
