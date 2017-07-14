@@ -17,30 +17,41 @@ feet();
 /******************************/
 
 module feet(){
-    h=20;       // Gap height
-    eh=30;    // Elastic feet height
+    h=21;       // Gap height, excluding mop height
+    eh=35;    // Elastic feet height
     
+    nh = 2.6;     // Nut height
+    nd = 6.6;     // Nut diameter
     union(){
-        translate([0,5,0])difference(){
+        translate([nh,13,2.85])rotate([90,0,-90])union(){
+            cylinder(h=nh, r=nd/2, $fn=6);
+            translate([0,-2.86,0])cube([8,5.72,nh]);
+        }
+        translate([h,13,2.85])rotate([90,0,-90])union(){
+            cylinder(h=nh, r=nd/2, $fn=6);
+            translate([0,-2.86,0])cube([8,5.72,nh]);
+        }
+        /*translate([0,5,0])difference(){
             cube([5,13,10]);
             translate([-5,8,5])rotate([0,90,0])bolt();
         }
         translate([h-5,5,0])difference(){
             cube([5,13,10]);
             translate([-5,8,5])rotate([0,90,0])bolt();
-        }
+        }*/
         difference(){
             cube([eh,8,3]);
             union(){
-                translate([5,3,-1])cube([h-10,6,5]);
+                translate([nh,3,-1])cube([h-(nh*2),6,5]);
                 translate([5,3,-1])cube([eh-8,1,5]);
             }
         }
     }
 }
 
-// Frame
+// Frame - 7 cm total height
 module mop(){
+    
     difference(){
         union(){
             // supports
@@ -73,9 +84,9 @@ module mop(){
             // spokes
             translate([15,-35,-3])cube([20,70,4]);
             translate([40,-35,-3])cube([20,70,4]);
-            
             translate([-35,-35,-3])cube([20,70,4]);
             translate([-60,-35,-3])cube([20,70,4]);
+            
             // mop flexible mounting
             translate([65,30,-5])nut();
             translate([65,-30,-5])nut();
@@ -95,6 +106,24 @@ module frame(){
         translate([-65,38,0])cube([130,2,5]);
         translate([38,-40,0])rotate([0,0,90])cube([80,2,5]);
         translate([-36,-40,0])rotate([0,0,90])cube([80,2,5]);
+        
+        // mop mounting
+        difference(){
+            union(){
+                translate([60,25,0])cube([10,15,5]);
+                translate([60,-40,0])cube([10,15,5]);
+                translate([-70,25,0])cube([10,15,5]);
+                translate([-70,-40,0])cube([10,15,5]);
+            }
+            union(){
+                // mop flexible mounting
+                translate([65,30,-5])nut();
+                translate([65,-30,-5])nut();
+                translate([-65,30,-5])rotate([0,0,180])nut();
+                translate([-65,-30,-5])rotate([0,0,180])nut();
+            }
+        }
+        
         // frame
         difference(){
             translate([-70,-40,-2])cube([140,80,2]);
@@ -111,11 +140,11 @@ module frame(){
                 
                 translate([-35,-35,-3])cube([20,70,4]);
                 translate([-60,-35,-3])cube([20,70,4]);
-                // mop flexible mounting
+                /*// mop flexible mounting
                 translate([65,30,2])rotate([0,180,0])bolt();
                 translate([65,-30,2])rotate([0,180,0])bolt();
                 translate([-65,30,2])rotate([0,180,0])bolt();
-                translate([-65,-30,2])rotate([0,180,0])bolt();
+                translate([-65,-30,2])rotate([0,180,0])bolt();*/
             }
         }
     }
