@@ -1,15 +1,11 @@
 
-//$fn = 150;
 clearance = 0.2;
 
 
-
-
-
+$fn = 150;
 //frame();
 //mop();
-feet();
-
+//feet();
 
 
 /******************************/
@@ -17,7 +13,7 @@ feet();
 /******************************/
 
 module feet(){
-    h=21;       // Gap height, excluding mop height
+    h=22;       // Gap height, excluding mop height
     eh=35;    // Elastic feet height
     
     nh = 2.6;     // Nut height
